@@ -24,11 +24,14 @@ $format_file_name = $ARGV[0];
 print "format_file_name == $format_file_name\n";
 
 if (open(my $format_file_handle, "<" . $format_file_name)) {
+    # Read the first line of column headers and add "unmatched"
     my $line = <$format_file_handle>;
     chomp($line);
     @columns = split(/\s*\,\s*/, $line);
     chomp(@columns);
     push @lines_to_write, join(",", @columns) . ",unmatched";
+    # Read the second line of regexes for each column header
+    # and add unmatched's catchall regex
     $line = <$format_file_handle>;
     chomp($line);
     @regexes = split(/\s*\,\s*/, $line);
@@ -56,22 +59,29 @@ if (open(my $log_file_handle, "<" . $log_file_name)) {
         my @matches;
         chomp($line);
         
-
-        foreach my $r (@regexes) {
+        for (my $i = 0; $i < @regexes; ++$i) {
+            my $r = $regexes[$i];
             if ($line =~ /($r)(.*)/) {
                 print $1, " matched with regex /^", $r, "/\n";
                 push @matches, $1;
                 print "remainder is now ", $2, "\n";
                 $line = $2;
                 chomp $line;
-            } else {
-                
+            } else { 
+                # if a match is missed, consider fomat broken, fast forward
+                # to the last regex that captures the remaining input into
+                # the "unmatched" column.
                 print $line, " did not match with regex /^", $r, "/\n";
+                print "fast forwarding to unmatch'd column.\n";
+                for (my $j = $i; $j < @regexes - 1; ++$j) {
+                    push @matches, "";
+                }
+                $i = @regexes - 2;
             }
         }
-
-        print "new row to be inserted is: \'", join(",", @matches), "\'\n";
-
+        my $row_to_write = join(",", @matches);
+        print "new row to be inserted is: \'", $row_to_write, "\'\n";
+        push @lines_to_write, $row_to_write;
     }
 
     close $log_file_handle;
@@ -83,7 +93,12 @@ if (open(my $log_file_handle, "<" . $log_file_name)) {
 # Write to LOG.csv #
 ####################
 
+print "Now printing rows to be written to ", $format_file_name, ".csv\n";
+print "\n";
 
+foreach my $l (@lines_to_write) {
+    print $l, "\n";
+}
 
 
 
