@@ -100,7 +100,15 @@ foreach my $l (@lines_to_write) {
     print $l, "\n";
 }
 
+if (open(my $csv_file_handle, ">" . $log_file_name . ".csv" )) {
+    foreach my $l (@lines_to_write) {
+        print $csv_file_handle $l . "\n";
+    }
 
+    close $csv_file_handle;
+} else {
+    die "Error: Could not write to $log_file_name.csv.\n";
+}
 
 
 
