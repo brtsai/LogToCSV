@@ -36,7 +36,6 @@ EXAMPLE
     ****
 
     yields log.csv:
-
     ****
     timestamp, pid, type, message, unmatched
     2017-10-09 23:22:16,3443,[Note],/rdsdbbin/mysql/bin/mysqld: ready for connections.,
