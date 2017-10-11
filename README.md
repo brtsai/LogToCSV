@@ -1,14 +1,17 @@
 LogToCSV Perl Script
- - By Bryan Tsai
+By Bryan Tsai
 
 
 NAME
+    
     LogToCSV - Convert a Log to a CSV format
 
 SYNOPSIS
+    
     LogToCSV.pl [FORMAT] [FILE]...
 
 DESCRIPTION
+    
     Convert each FILE according to the format given in the FORMAT file
     assuming that each line in FILE maps to each row in the resulting CSV.
     FORMAT files must be formatted as a CSV wherein the first row provides
@@ -18,6 +21,7 @@ DESCRIPTION
     so no loss of information occurs.
 
 EXAMPLE
+    
     LogToCSV.pl format log
 
     format:
@@ -39,6 +43,7 @@ EXAMPLE
     ****
 
 UNCAUGHT EDGE CASES AND NOTES
+    
     May not handle regexes in the format file that contain ,'s (commas) properly.
     
     Not CSV RFC4180 compliant. May not handle FORMAT file CSV whose elements
